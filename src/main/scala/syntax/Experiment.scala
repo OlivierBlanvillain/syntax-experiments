@@ -26,7 +26,7 @@ object Experiment {
     val results = new CopyOnWriteArrayList[(ScalaFile, T)]
     val counter = new AtomicInteger()
     val errors = new AtomicInteger()
-    ScalaFile.getAll.take(size).toVector.par.foreach { file =>
+    ScalaFile.getAll.take(size).toVector.foreach { file =>
       val n = counter.incrementAndGet()
       if (n % 1000 == 0) {
         println(n)
@@ -75,6 +75,21 @@ object Experiment {
     builder.result()
   }
 
+  val TupleExtract = "_(\\d+)".r
+
+  def runTupleDirectAccess(): Unit = {
+    val compounds = runAnalysis(30000)(collectAnalysis {
+      case Term.Select(_, Term.Name(TupleExtract(num))) =>
+        num: String
+      case Pat.Tuple(args) =>
+        args.length: Int
+    })
+    (compounds map (_._2) groupBy identity map {
+       case (s: String, count) => s"_$s: ${count.size}"
+       case (i: Int, count)    => s"($i): ${count.size}"
+     }).toList.sorted foreach println
+  }
+
   def runTypeCompounds(): Unit = {
     val compounds = runAnalysis(30000)(collectAnalysis {
       case t: Type.Compound =>
@@ -99,7 +114,7 @@ object Experiment {
 
   def main(args: Array[String]): Unit = {
     println("Experiment!!!")
-    runTypeProjections()
+    runTupleDirectAccess()
   }
 }
 

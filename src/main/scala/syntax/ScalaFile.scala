@@ -56,7 +56,10 @@ object ScalaFile {
       // uses a package called `macro`
       "target/repos/sbt/sbt/src/sbt-test/source-dependencies/inherited-macros",
       "target/repos/sbt/sbt/src/sbt-test/source-dependencies/macro",
-      "target/repos/lila/modules/lobby/src/main/SocketHandler.scala").exists(
+      "target/repos/lila/modules/lobby/src/main/SocketHandler.scala",
+      // SO
+      "target/repos/kafka/core/src/main/scala/kafka/server/KafkaConfig.scala"
+      ).exists(
       filename.contains)
   }
 
